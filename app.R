@@ -26,8 +26,7 @@ server <- function(input, output, session) {
   
   ### Creating a reactive object to automatically update the choices of the first two filters
   
-  v <- reactiveValues(df = NULL)
-  
+ 
   pos_vec <- reactive({
     if(input$filter1 == "Show all"){
       
