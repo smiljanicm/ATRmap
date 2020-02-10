@@ -3,7 +3,15 @@ library(shiny)
 library(leaflet)
 library(tidyverse)
 df <- read.csv("./www/ATR tree-ring lab map (Responses) - Form Responses 1.csv", stringsAsFactors = FALSE)### Place it in "www" folder in app directory
-df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener noreferrer' target='_blank'>" , .[["Lab.name...Institution"]] ,  "</a>")} ### adding column with formatted string for "addCircleMarkers()"
+
+df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener noreferrer' target='_blank'>" , .[["Lab.name...Institution"]] ,  "</a>", "<br>",
+                            "<a href = ", paste("mailto:", .[["Email"]] ,sep = ""), ">" , paste(.[["Academic.title"]], .[["Surname"]], .[["Family.name"]]), "</a>", 
+                           "<p>", "<b>", "Address:", "</b>", .[["Address"]], ",",.[["Postal.code...city"]], ",",
+                           .[["Country"]],"</p>", 
+                           "<p>", "<b>", "Research foci:", "</b>",.[["Research.focus.of.the.lab"]], "</p>",
+                           "<p>", "<b>", "Infrastructure:", "</b>", .[["Infrastructure.is.available.for.measuring."]], "</p>", 
+                            "<p>", "<b>", "Additional info:", "</b>", .[["Additional.lab.info"]], "</p>")} ### adding column with formatted string for "addCircleMarkers()"
+
 
 specialties <- c("Research focus of the lab:", "Dendroecology", "Dendroclimatology", "Dendrogeomorphology", 
                  "Dendroarchaeology", "Dendrochemistry")
