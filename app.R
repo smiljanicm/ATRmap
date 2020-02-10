@@ -8,7 +8,7 @@ df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener nor
 specialties <- c("Research focus of the lab:", "Dendroecology", "Dendroclimatology", "Dendrogeomorphology", 
                  "Dendroarchaeology", "Dendrochemistry")
 
-infrastructure <- c("Available infrastructure for:", "tree-ring widths", "wood density", "blue intensity", 
+infrastructure <- c("Available infrastructure for measuring:", "tree-ring widths", "wood density", "blue intensity", 
                     "wood anatomy", "wood chemistry", "stable isotopes")
 
 
@@ -36,7 +36,7 @@ server <- function(input, output, session) {
   })
   
   pos_vec2 <- reactive({
-    if(input$infrastructure == "Available infrastructure for:"){
+    if(input$infrastructure == "Available infrastructure for measuring:"){
       seq_len(nrow(df))
     }else {
         sel_vec_filt2 <- sapply(seq_len(nrow(df)), function(x){
