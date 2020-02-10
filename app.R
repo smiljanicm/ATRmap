@@ -6,7 +6,7 @@ df <- read.csv("./www/ATR tree-ring lab map (Responses) - Form Responses 1.csv",
 
 df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener noreferrer' target='_blank'>" , .[["Lab.name...Institution"]] ,  "</a>", "<br>",
                             "<a href = ", paste("mailto:", .[["Email"]] ,sep = ""), ">" , paste(.[["Academic.title"]], .[["Surname"]], .[["Family.name"]]), "</a>", 
-                           "<p>", "<b>", "Address:", "</b>", .[["Address"]], .[["Postal.code...city"]], 
+                           "<p>", "<b>", "Address:", "</b>", .[["Address"]], ",",.[["Postal.code...city"]], ",",
                            .[["Country"]],"</p>", 
                            "<p>", "<b>", "Research foci:", "</b>",.[["Research.focus.of.the.lab"]], "</p>",
                            "<p>", "<b>", "Infrastructure:", "</b>", .[["Infrastructure.is.available.for.measuring."]], "</p>", 
