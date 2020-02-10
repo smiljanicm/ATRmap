@@ -1,37 +1,59 @@
+
 library(shiny)
 library(leaflet)
 library(tidyverse)
-df <- read.csv(textConnection(
-  "Name,Lat,Long, content
-Dendrogreif,54.092478, 13.364295, <a href = https://botanik.uni-greifswald.de/en/landscape-ecology-and-ecosystem-dynamics/laboratories/dendroecological-lab-dendrogreif/ > Dendrogreif </a>
-Marieke&Ernst,50.985248, 13.580322, <a href = https://tu-dresden.de/bu/umwelt/forst/ww/waldwachstum/ >  Chair of Forest growth </ a>"
-), stringsAsFactors = FALSE)
+df <- read.csv("./www/ATR tree-ring lab map (Responses) - Form Responses 1.csv", stringsAsFactors = FALSE)### Place it in "www" folder in app directory
+df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener noreferrer' target='_blank'>" , .[["Lab.name...Institution"]] ,  "</a>")} ### adding column with formatted string for "addCircleMarkers()"
+
+specialties <- c("Research focus of the lab:", "Dendroecology", "Dendroclimatology", "Dendrogeomorphology", 
+                 "Dendroarchaeology", "Dendrochemistry")
+
+infrastructure <- c("Available infrastructure for:", "tree-ring widths", "wood density", "blue intensity", 
+                    "wood anatomy", "wood chemistry", "stable isotopes")
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  div(style="display:inline-block; width: 33%",
-      selectInput("filter1", NULL, c("Filter 1" = "", LETTERS))),
-  div(style="display:inline-block; width: 33%", 
-      selectInput("filter2", NULL, c("Filter 2" = "", LETTERS))),
-  div(style="display:inline-block; width: 33%",
-      selectInput("filter3", NULL, c(providers), 'Esri')),
-   leafletOutput("mymap", height=600)
+  div(style="display:inline-block; width: 48%",
+      selectInput("focus", NULL, specialties, width='100%')),
+  div(style="display:inline-block; width: 48%; float:right", 
+      selectInput("infrastructure", NULL, infrastructure, width='100%')),
+  leafletOutput("mymap", height='600px')
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
+  ### Creating a reactive object to automatically update the choices of the filters
+  pos_vec <- reactive({
+    if(input$focus == "Research focus of the lab:"){
+      seq_len(nrow(df))
+    }else{
+      sel_vec <- sapply(seq_len(nrow(df)), function(x){
+        input$focus %in% (df[x,]$Research.focus.of.the.lab %>% {unlist(strsplit(., split = ", "))})
+      })
+      which(sel_vec == TRUE)
+    }
+  })
+  
+  pos_vec2 <- reactive({
+    if(input$infrastructure == "Available infrastructure for:"){
+      seq_len(nrow(df))
+    }else {
+        sel_vec_filt2 <- sapply(seq_len(nrow(df)), function(x){
+        input$infrastructure %in% (df[x,]$Infrastructure.is.available.for.measuring %>% {unlist(strsplit(., split = ", "))})
+      })
+      which(sel_vec_filt2 == TRUE)
+    }
+  })
+  
   output$mymap <- renderLeaflet({
-    print(str(df))
-    df %>%
-      filter(Name != 'A') %>% #we do filtering here
+     intersect(df[pos_vec(), ], df[pos_vec2(),])  %>% 
       leaflet() %>%
-      addProviderTiles(input$filter3,
-                       options = providerTileOptions(noWrap = TRUE), group = 'Filter') %>%
-      addProviderTiles('Esri.WorldTopoMap', group = 'Topo') %>%
-      addProviderTiles('Esri.WorldImagery', group = 'Sat') %>%
-      addProviderTiles('Stamen.TonerLabels', group = 'Sat') %>%
-      addLayersControl(baseGroups = c('Filter', 'Topo', 'Sat')) %>%
-      addCircleMarkers(~Long, ~Lat, popup=~content) %>%
+      addProviderTiles('Esri.WorldTopoMap', group = 'Terrain') %>%
+      addProviderTiles('Esri.WorldImagery', group = 'Satellite') %>%
+      addProviderTiles('Stamen.TonerLabels', group = 'Satellite') %>%
+      addLayersControl(baseGroups = c('Terrain', 'Satellite')) %>%
+      addCircleMarkers(~Longitude, ~Latitude, popup=~content) %>%
       
       setView(10, 50, zoom = 5)
   })
@@ -39,4 +61,3 @@ server <- function(input, output, session) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
