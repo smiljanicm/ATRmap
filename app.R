@@ -22,6 +22,17 @@ infrastructure <- c("Available infrastructure for measuring:", "tree-ring widths
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  includeCSS('styles.css'),
+  HTML("<div style=background-image:url('cropped-wood-anatomy.jpg');height:110px>
+
+       <a href=https://tree-ring.org><img height=110px style=float:right;padding:5px src='atr-logo-e1503996263895.jpg'></a>
+       <h1>
+        <b>
+        Map of tree-ring labs
+        </b>
+      </h1>
+       </div>"),
+  br(),
   div(style="display:inline-block; width: 48%",
       selectInput("focus", NULL, specialties, width='100%')),
   div(style="display:inline-block; width: 48%; float:right", 
