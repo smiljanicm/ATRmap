@@ -5,7 +5,7 @@ library(tidyverse)
 df <- read.csv("./www/ATR tree-ring lab map (Responses) - Form Responses 1.csv", stringsAsFactors = FALSE)### Place it in "www" folder in app directory
 
 df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener noreferrer' target='_blank'>" , .[["Lab.name...Institution"]] ,  "</a>", "<br>",
-                            "Lab lead: <a href = ", paste("mailto:", .[["Email"]] ,sep = ""), ">" , paste(.[["Academic.title"]], .[["Surname"]], .[["Family.name"]]), "</a> <br />", 
+                            "Lab lead: <a href = ", paste("mailto:", .[["Email"]] ,sep = ""), ">" , paste(.[["Academic.title"]], .[["First.name"]], .[["Family.name"]]), "</a> <br />", 
                            paste0("<p><b>", "Address:<br/>", "</b>", .[["Address"]], ", ",.[["Postal.code...city"]], ", ",
                            .[["Country"]],"</p>"), 
                            "<p><b>", "Research foci:", "</b><br />",.[["Research.focus.of.the.lab"]], "</p>",
@@ -16,9 +16,8 @@ df$content <- df %>% {paste("<a href = ", .[["Webpage.URL"]] ,"rel='noopener nor
 specialties <- c("Research focus of the lab:", "Dendroecology", "Dendroclimatology", "Dendrogeomorphology", 
                  "Dendroarchaeology", "Dendrochemistry")
 
-infrastructure <- c("Available infrastructure for measuring:", "tree-ring widths", "wood density", "blue intensity", 
+infrastructure <- c("Available infrastructure for measuring:", "tree-ring width", "wood density", "blue intensity", 
                     "wood anatomy", "wood chemistry", "stable isotopes")
-
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -70,11 +69,11 @@ server <- function(input, output, session) {
       leaflet() %>%
       addProviderTiles('Esri.WorldTopoMap', group = 'Terrain') %>%
       addProviderTiles('Esri.WorldImagery', group = 'Satellite') %>%
-      addProviderTiles('Stamen.TonerLabels', group = 'Satellite') %>%
+#      addProviderTiles('Stamen.TonerLabels', group = 'Satellite') %>%
       addLayersControl(baseGroups = c('Terrain', 'Satellite')) %>%
-      addCircleMarkers(~Longitude, ~Latitude, popup=~content) %>%
-      
-      setView(10, 50, zoom = 5)
+#      addCircleMarkers(lng=df$Longitude, lat=df$Latitude)
+      addCircleMarkers(~Longitude, ~Latitude, popup=~content, clusterOptions = markerClusterOptions(maxClusterRadius = 10)) %>%
+      setView(10, 50, zoom = 2)
   })
 }
 

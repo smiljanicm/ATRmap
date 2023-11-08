@@ -1,0 +1,12 @@
+name: ATRmap-master
+title: ATRmap-master
+username:
+account: tree-ring
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1798457
+bundleId: 2797985
+url: https://tree-ring.shinyapps.io/ATRmap-master/
+when: 1581603016.33678
+asMultiple: FALSE
+asStatic: FALSE
